@@ -7,4 +7,8 @@
     <img *ngIf="!kitten.exploded" [src]="kitten.img" alt="kitten" />
     <div *ngIf="kitten.exploded" class="explosion">💥</div>
   </div>
+  <div *ngIf="gameOver" class="game-over-popup">
+    <div class="game-over-title">GAME OVER</div>
+    <div class="game-over-subtitle">Press F5 to try again!</div>
+  </div>
 </div>

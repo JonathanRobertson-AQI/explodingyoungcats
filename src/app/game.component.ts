@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+// ...existing code...
+import { interval, Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-game',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
@@ -15,6 +20,10 @@ export class GameComponent {
 
   kittens: any[] = [];
   score = 0;
+  gameOver = false;
+  private moveSub?: Subscription;
+
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.spawnKittens();
@@ -32,16 +41,25 @@ export class GameComponent {
   }
 
   animateKittens() {
-    const interval = setInterval(() => {
-      this.kittens.forEach(kitten => {
+    this.moveSub = interval(100).subscribe(() => {
+      this.kittens.forEach((kitten: any) => {
         if (!kitten.exploded && kitten.y < 80) {
           kitten.y += 2;
+          // Random sideways movement
+          const dx = (Math.random() - 0.5) * 4; // -2 to +2
+          kitten.x += dx;
+          // Clamp x between 0 and 90
+          if (kitten.x < 0) kitten.x = 0;
+          if (kitten.x > 90) kitten.x = 90;
         }
       });
-      if (this.kittens.every(k => k.y >= 80 || k.exploded)) {
-        clearInterval(interval);
+      // If any kitten hits the bottom, game over
+      if (this.kittens.some((k: any) => !k.exploded && k.y >= 80)) {
+        this.gameOver = true;
+        this.moveSub?.unsubscribe();
       }
-    }, 100);
+      this.cdr.detectChanges();
+    });
   }
 
   explodeKitten(kitten: any) {
