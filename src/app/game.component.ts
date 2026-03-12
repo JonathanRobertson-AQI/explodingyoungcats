@@ -44,7 +44,7 @@ export class GameComponent {
     this.moveSub = interval(100).subscribe(() => {
       this.kittens.forEach((kitten: any) => {
         if (!kitten.exploded && kitten.y < 96) {
-          kitten.y += 2;
+          kitten.y += 0.5;
           // Random sideways movement
           const dx = (Math.random() - 0.5) * 4; // -2 to +2
           kitten.x += dx;
