@@ -1,3 +1,29 @@
+.game-win-popup {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  border: 4px solid #0f0;
+  box-shadow: 0 0 20px #0f0, 0 0 10px #ff0;
+  padding: 40px 60px;
+  z-index: 10;
+  text-align: center;
+}
+.game-win-title {
+  font-family: 'Press Start 2P', monospace, 'Courier New', Courier;
+  font-size: 3em;
+  color: #0f0;
+  text-shadow: 2px 2px 0 #ff0, 4px 4px 0 #00f;
+  margin-bottom: 20px;
+  letter-spacing: 0.1em;
+}
+.game-win-subtitle {
+  font-family: 'Press Start 2P', monospace, 'Courier New', Courier;
+  font-size: 1.2em;
+  color: #fff;
+  margin-top: 10px;
+}
 .game-over-popup {
   position: absolute;
   top: 30%;

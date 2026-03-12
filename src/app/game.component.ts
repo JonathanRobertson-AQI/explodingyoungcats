@@ -21,6 +21,7 @@ export class GameComponent {
   kittens: any[] = [];
   score = 0;
   gameOver = false;
+  gameWin = false;
   private moveSub?: Subscription;
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
@@ -56,6 +57,11 @@ export class GameComponent {
       // If any kitten is 20% below the screen, game over
       if (this.kittens.some((k: any) => !k.exploded && k.y >= 96)) {
         this.gameOver = true;
+        this.moveSub?.unsubscribe();
+      }
+      // If all kittens are exploded, win
+      if (this.kittens.every((k: any) => k.exploded)) {
+        this.gameWin = true;
         this.moveSub?.unsubscribe();
       }
       this.cdr.detectChanges();

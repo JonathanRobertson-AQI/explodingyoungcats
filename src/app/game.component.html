@@ -11,4 +11,8 @@
     <div class="game-over-title">GAME OVER</div>
     <div class="game-over-subtitle">Press F5 to try again!</div>
   </div>
+  <div *ngIf="gameWin" class="game-win-popup">
+    <div class="game-win-title">YOU WIN!</div>
+    <div class="game-win-subtitle">All kittens exploded!<br>Press F5 to play again!</div>
+  </div>
 </div>
