@@ -43,7 +43,7 @@ export class GameComponent {
   animateKittens() {
     this.moveSub = interval(100).subscribe(() => {
       this.kittens.forEach((kitten: any) => {
-        if (!kitten.exploded && kitten.y < 80) {
+        if (!kitten.exploded && kitten.y < 96) {
           kitten.y += 2;
           // Random sideways movement
           const dx = (Math.random() - 0.5) * 4; // -2 to +2
@@ -53,8 +53,8 @@ export class GameComponent {
           if (kitten.x > 90) kitten.x = 90;
         }
       });
-      // If any kitten hits the bottom, game over
-      if (this.kittens.some((k: any) => !k.exploded && k.y >= 80)) {
+      // If any kitten is 20% below the screen, game over
+      if (this.kittens.some((k: any) => !k.exploded && k.y >= 96)) {
         this.gameOver = true;
         this.moveSub?.unsubscribe();
       }
