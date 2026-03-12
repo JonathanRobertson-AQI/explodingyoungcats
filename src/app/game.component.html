@@ -1,0 +1,10 @@
+<div class="game-container">
+  <div class="score">Score: {{ score }}</div>
+  <div class="kitten" *ngFor="let kitten of kittens"
+       [style.left]="kitten.x + '%'"
+       [style.top]="kitten.y + '%'"
+       (click)="explodeKitten(kitten)">
+    <img *ngIf="!kitten.exploded" [src]="kitten.img" alt="kitten" />
+    <div *ngIf="kitten.exploded" class="explosion">💥</div>
+  </div>
+</div>

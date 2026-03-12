@@ -1,0 +1,29 @@
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 90vh;
+  background: #222;
+  overflow: hidden;
+}
+.score {
+  color: #fff;
+  font-size: 2em;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+}
+.kitten {
+  position: absolute;
+  cursor: pointer;
+  transition: top 0.1s linear;
+}
+.kitten img {
+  width: 80px;
+  height: 80px;
+}
+.explosion {
+  font-size: 3em;
+  color: #ff0;
+  text-shadow: 0 0 10px #f00;
+}

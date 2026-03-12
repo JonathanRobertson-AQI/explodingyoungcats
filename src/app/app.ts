@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
+import { GameComponent } from './game.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [GameComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
