@@ -11,6 +11,14 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+          restartGame() {
+            this.wave = 1;
+            this.score = 0;
+            this.gameOver = false;
+            this.gameWin = false;
+            this.spawnKittens();
+            this.cdr.detectChanges();
+          }
         kittenSpeed = 0.5;
       wave = 1;
       initialKittenCount = 8;

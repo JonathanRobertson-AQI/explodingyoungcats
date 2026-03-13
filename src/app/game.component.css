@@ -1,4 +1,22 @@
 .game-win-popup {
+  }
+  .restart-btn {
+    margin-top: 20px;
+    padding: 16px 32px;
+    font-size: 1.2em;
+    font-family: 'Press Start 2P', monospace, 'Courier New', Courier;
+    background: #222;
+    color: #0f0;
+    border: 3px solid #0f0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #0f0;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .restart-btn:hover {
+    background: #0f0;
+    color: #222;
+  }
   position: absolute;
   top: 30%;
   left: 50%;
