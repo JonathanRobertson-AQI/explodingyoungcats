@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+        kittenSpeed = 0.5;
       wave = 1;
       initialKittenCount = 8;
     laserSound: HTMLAudioElement | null = null;
@@ -47,7 +48,14 @@ export class GameComponent {
   }
 
   spawnKittens() {
-    const count = this.wave === 1 ? this.initialKittenCount : this.initialKittenCount * 2;
+    let count = this.initialKittenCount;
+    if (this.wave === 2) {
+      count = this.initialKittenCount * 2;
+      this.kittenSpeed = 0.5;
+    } else if (this.wave === 3) {
+      count = Math.floor(this.initialKittenCount * 2 * 1.5);
+      this.kittenSpeed = 0.5 * 1.25;
+    }
     this.kittens = Array.from({ length: count }, (_, i) => ({
       id: i,
       x: Math.random() * 80 + 10,
@@ -80,6 +88,9 @@ export class GameComponent {
       if (this.kittens.every((k: any) => k.exploded)) {
         if (this.wave === 1) {
           this.wave = 2;
+          this.spawnKittens();
+        } else if (this.wave === 2) {
+          this.wave = 3;
           this.spawnKittens();
         } else {
           this.gameWin = true;
