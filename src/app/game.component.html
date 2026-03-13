@@ -1,12 +1,19 @@
 <div class="game-container">
+    <div *ngFor="let laser of lasers" class="laser" [style.left]="laser.x + '%'" [style.top]="laser.y + '%'">
+      <div class="laser-beam"></div>
+    </div>
   <div class="score">Score: {{ score }}</div>
   <div class="kitten" *ngFor="let kitten of kittens"
        [style.left]="kitten.x + '%'"
        [style.top]="kitten.y + '%'"
-       (click)="explodeKitten(kitten)">
+       (click)="explodeKitten(kitten, $event)">
     <img *ngIf="!kitten.exploded" [src]="kitten.img" alt="kitten" />
     <div *ngIf="kitten.exploded" class="explosion">💥</div>
   </div>
+  <div *ngFor="let laser of lasers" class="laser" [style.left]="laser.x + '%'" [style.top]="laser.y + '%'">
+    <div class="laser-beam"></div>
+  </div>
+  <div class="game-click-capture" (click)="onGameClick($event)"></div>
   <div *ngIf="showStartMessage" class="game-start-popup">
     <div class="game-start-title">CLICK THOSE CATS!</div>
   </div>

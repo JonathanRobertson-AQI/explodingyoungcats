@@ -23,6 +23,8 @@ export class GameComponent {
   gameOver = false;
   gameWin = false;
   showStartMessage = false;
+  lasers: { x: number, y: number, id: number }[] = [];
+  laserId = 0;
   private moveSub?: Subscription;
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
@@ -74,10 +76,83 @@ export class GameComponent {
     });
   }
 
-  explodeKitten(kitten: any) {
+  explodeKitten(kitten: any, event?: MouseEvent) {
     if (!kitten.exploded) {
       kitten.exploded = true;
       this.score += 100;
     }
+    // Fire a laser from the bottom at the click position
+    let xPercent = kitten.x;
+    if (event) {
+      xPercent = this.getClickXPercent(event);
+    }
+    this.fireLaser(xPercent);
+  }
+
+  onGameClick(event: MouseEvent) {
+    // Only fire if not clicking a kitten
+    const target = event.target as HTMLElement;
+    if (!target.classList.contains('kitten') && !target.closest('.kitten')) {
+      const xPercent = this.getClickXPercent(event);
+      this.fireLaser(xPercent);
+    }
+  }
+
+  getClickXPercent(event: MouseEvent): number {
+    const container = (event.currentTarget as HTMLElement);
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    return (x / rect.width) * 100;
+  }
+
+  fireLaser(x: number) {
+    const id = this.laserId++;
+    let y = 90;
+    this.lasers.push({ x, y, id });
+    const intervalId = setInterval(() => {
+      y -= 5;
+      // Check collision with kittens
+      this.kittens.forEach((kitten: any) => {
+        if (!kitten.exploded && this.laserHitsKitten(x, y, kitten)) {
+          kitten.exploded = true;
+          this.score += 100;
+        }
+      });
+      if (y <= 0) {
+        this.lasers = this.lasers.filter(l => l.id !== id);
+        clearInterval(intervalId);
+        this.cdr.detectChanges();
+      } else {
+        // Update laser position
+        const laser = this.lasers.find(l => l.id === id);
+        if (laser) {
+          laser.y = y;
+        }
+        this.cdr.detectChanges();
+      }
+    }, 16);
+    this.cdr.detectChanges();
+  }
+
+  laserHitsKitten(laserX: number, laserY: number, kitten: any): boolean {
+    // Kitten size: 80px, game area: 100vw x 90vh, kitten.x/y are in %
+    // We'll use a bounding box collision
+    // Laser is 8px wide, 60px tall, but we check the tip (laserY)
+    // Assume kittens are 80px x 80px, convert % to px
+    const gameWidth = window.innerWidth;
+    const gameHeight = window.innerHeight * 0.9;
+    const kittenWidth = 80;
+    const kittenHeight = 80;
+    const kittenXpx = (kitten.x / 100) * gameWidth;
+    const kittenYpx = (kitten.y / 100) * gameHeight;
+    const laserXpx = (laserX / 100) * gameWidth;
+    const laserYpx = (laserY / 100) * gameHeight;
+    // Check if laser tip is inside kitten bounding box
+    return (
+      laserXpx >= kittenXpx &&
+      laserXpx <= kittenXpx + kittenWidth &&
+      laserYpx >= kittenYpx &&
+      laserYpx <= kittenYpx + kittenHeight
+    );
   }
 }

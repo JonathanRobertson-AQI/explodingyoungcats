@@ -141,6 +141,15 @@
   background: #222;
   overflow: hidden;
 }
+.game-click-capture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+}
 .score {
   color: #fff;
   font-size: 2em;
@@ -157,6 +166,21 @@
 .kitten img {
   width: 80px;
   height: 80px;
+}
+.laser {
+  position: absolute;
+  width: 8px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 5;
+}
+.laser-beam {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #0ff 0%, #fff 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 16px 4px #0ff;
+  opacity: 0.85;
 }
 .explosion {
   font-size: 3em;
