@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+    laserSound: HTMLAudioElement | null = null;
+    explosionSound: HTMLAudioElement | null = null;
   kittenImages = [
     'assets/png-transparent-cat-kitten-cuteness-cat-brown-tabby-kitten-household-animals-cat-like-mammal-thumbnail.png',
     'assets/png-transparent-kitten-bengal-cat-dog-pet-sitting-puppy-kitten-mammal-cat-like-mammal-animals-thumbnail.png',
@@ -30,6 +32,10 @@ export class GameComponent {
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    if (typeof window !== 'undefined') {
+      this.laserSound = new Audio('assets/sounds/laser.mp3');
+      this.explosionSound = new Audio('assets/sounds/explosion.wav');
+    }
     this.showStartMessage = true;
     setTimeout(() => {
       this.showStartMessage = false;
@@ -106,6 +112,10 @@ export class GameComponent {
   }
 
   fireLaser(x: number) {
+    if (this.laserSound) {
+      this.laserSound.currentTime = 0;
+      this.laserSound.play();
+    }
     const id = this.laserId++;
     let y = 90;
     this.lasers.push({ x, y, id });
@@ -116,6 +126,10 @@ export class GameComponent {
         if (!kitten.exploded && this.laserHitsKitten(x, y, kitten)) {
           kitten.exploded = true;
           this.score += 100;
+          if (this.explosionSound) {
+            this.explosionSound.currentTime = 0;
+            this.explosionSound.play();
+          }
         }
       });
       if (y <= 0) {
