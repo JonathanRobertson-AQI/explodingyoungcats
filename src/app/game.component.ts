@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+            meowSound: HTMLAudioElement | null = null;
           restartGame() {
             this.wave = 1;
             this.score = 0;
@@ -46,6 +47,7 @@ export class GameComponent {
     if (typeof window !== 'undefined') {
       this.laserSound = new Audio('assets/sounds/laser.mp3');
       this.explosionSound = new Audio('assets/sounds/explosion.wav');
+      this.meowSound = new Audio('assets/sounds/meow.mp3');
     }
     this.showStartMessage = true;
     setTimeout(() => {
@@ -56,6 +58,10 @@ export class GameComponent {
   }
 
   spawnKittens() {
+        if (this.meowSound) {
+          this.meowSound.currentTime = 0;
+          this.meowSound.play();
+        }
     let count = this.initialKittenCount;
     if (this.wave === 2) {
       count = this.initialKittenCount * 2;
