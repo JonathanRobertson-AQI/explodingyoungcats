@@ -69,6 +69,9 @@ export class GameComponent {
     } else if (this.wave === 3) {
       count = Math.floor(this.initialKittenCount * 2 * 1.5);
       this.kittenSpeed = 0.5 * 1.25;
+    } else if (this.wave === 4) {
+      count = Math.floor(this.initialKittenCount * 2 * 1.5 * 2);
+      this.kittenSpeed = 0.5 * 1.25;
     }
     this.kittens = Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -98,13 +101,16 @@ export class GameComponent {
         this.gameOver = true;
         this.moveSub?.unsubscribe();
       }
-      // If all kittens are exploded, win
+      // If all kittens are exploded, win or next wave
       if (this.kittens.every((k: any) => k.exploded)) {
         if (this.wave === 1) {
           this.wave = 2;
           this.spawnKittens();
         } else if (this.wave === 2) {
           this.wave = 3;
+          this.spawnKittens();
+        } else if (this.wave === 3) {
+          this.wave = 4;
           this.spawnKittens();
         } else {
           this.gameWin = true;
