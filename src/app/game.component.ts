@@ -22,12 +22,18 @@ export class GameComponent {
   score = 0;
   gameOver = false;
   gameWin = false;
+  showStartMessage = false;
   private moveSub?: Subscription;
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.spawnKittens();
+    this.showStartMessage = true;
+    setTimeout(() => {
+      this.showStartMessage = false;
+      this.spawnKittens();
+      this.cdr.detectChanges();
+    }, 1000);
   }
 
   spawnKittens() {
