@@ -72,6 +72,9 @@ export class GameComponent {
     } else if (this.wave === 4) {
       count = Math.floor(this.initialKittenCount * 2 * 1.5 * 2);
       this.kittenSpeed = 0.5 * 1.25;
+    } else if (this.wave === 5) {
+      count = Math.floor(this.initialKittenCount * 2 * 1.5 * 2 * 2);
+      this.kittenSpeed = 0.5 * 1.25 * 1.5;
     }
     this.kittens = Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -111,6 +114,9 @@ export class GameComponent {
           this.spawnKittens();
         } else if (this.wave === 3) {
           this.wave = 4;
+          this.spawnKittens();
+        } else if (this.wave === 4) {
+          this.wave = 5;
           this.spawnKittens();
         } else {
           this.gameWin = true;
