@@ -36,6 +36,7 @@ export class GameComponent {
   score = 0;
   gameOver = false;
   gameWin = false;
+  showTitleScreen = false;
   showStartMessage = false;
   lasers: { x: number, y: number, id: number }[] = [];
   laserId = 0;
@@ -49,11 +50,16 @@ export class GameComponent {
       this.explosionSound = new Audio('assets/sounds/explosion.wav');
       this.meowSound = new Audio('assets/sounds/meow.mp3');
     }
-    this.showStartMessage = true;
+    this.showTitleScreen = true;
     setTimeout(() => {
-      this.showStartMessage = false;
-      this.spawnKittens();
+      this.showTitleScreen = false;
+      this.showStartMessage = true;
       this.cdr.detectChanges();
+      setTimeout(() => {
+        this.showStartMessage = false;
+        this.spawnKittens();
+        this.cdr.detectChanges();
+      }, 1000);
     }, 1000);
   }
 

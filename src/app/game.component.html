@@ -14,6 +14,9 @@
     <div class="laser-beam"></div>
   </div>
   <div class="game-click-capture" (click)="onGameClick($event)"></div>
+  <div *ngIf="showTitleScreen" class="game-title-popup">
+    <div class="game-title-text">CAT INVADERS</div>
+  </div>
   <div *ngIf="showStartMessage" class="game-start-popup">
     <div class="game-start-title">CLICK THOSE CATS!</div>
   </div>
