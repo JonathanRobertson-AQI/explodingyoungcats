@@ -209,7 +209,7 @@
 .leaderboard-title {
   margin-top: 16px;
   color: #2ff3ff;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 
 .leaderboard {
@@ -228,7 +228,7 @@
   border-bottom: 1px solid rgba(47, 243, 255, 0.2);
   color: #ffffff;
   font-family: 'Press Start 2P', monospace, 'Courier New', Courier;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   text-align: left;
 }
 
@@ -265,6 +265,6 @@
 
   .leaderboard li {
     grid-template-columns: 40px 1fr auto;
-    font-size: 0.65rem;
+    font-size: 0.74rem;
   }
 }
