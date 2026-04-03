@@ -104,7 +104,12 @@ export class GameComponent {
   }
 
   animateKittens() {
+    this.moveSub?.unsubscribe();
     this.moveSub = interval(100).subscribe(() => {
+      if (this.gameOver || this.gameWin) {
+        return;
+      }
+
       this.kittens.forEach((kitten: any) => {
         if (!kitten.exploded && kitten.y < 96) {
           kitten.y += this.kittenSpeed;
@@ -121,9 +126,13 @@ export class GameComponent {
         this.gameOver = true;
         this.moveSub?.unsubscribe();
         this.loadTopScores();
+        this.cdr.detectChanges();
+        return;
       }
+
       // If all kittens are exploded, win or next wave
       if (this.kittens.every((k: any) => k.exploded)) {
+        this.moveSub?.unsubscribe();
         if (this.wave === 1) {
           this.wave = 2;
           this.spawnKittens();
@@ -140,8 +149,10 @@ export class GameComponent {
           this.gameWin = true;
           this.loadTopScores();
         }
-        this.moveSub?.unsubscribe();
+        this.cdr.detectChanges();
+        return;
       }
+
       this.cdr.detectChanges();
     });
   }
@@ -163,6 +174,10 @@ export class GameComponent {
   }
 
   explodeKitten(kitten: any, event?: MouseEvent) {
+    if (this.gameOver || this.gameWin) {
+      return;
+    }
+
     if (!kitten.exploded) {
       kitten.exploded = true;
       this.score += 100;
@@ -176,6 +191,10 @@ export class GameComponent {
   }
 
   onGameClick(event: MouseEvent) {
+    if (this.gameOver || this.gameWin) {
+      return;
+    }
+
     // Only fire if not clicking a kitten
     const target = event.target as HTMLElement;
     if (!target.classList.contains('kitten') && !target.closest('.kitten')) {
