@@ -1,30 +1,26 @@
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-// ...existing code...
 import { interval, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+  HighScoreApiService,
+  HighScoreResponse,
+} from './high-score-api.service';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
-            meowSound: HTMLAudioElement | null = null;
-          restartGame() {
-            this.wave = 1;
-            this.score = 0;
-            this.gameOver = false;
-            this.gameWin = false;
-            this.spawnKittens();
-            this.cdr.detectChanges();
-          }
-        kittenSpeed = 0.5;
-      wave = 1;
-      initialKittenCount = 8;
-    laserSound: HTMLAudioElement | null = null;
-    explosionSound: HTMLAudioElement | null = null;
+  meowSound: HTMLAudioElement | null = null;
+  kittenSpeed = 0.5;
+  wave = 1;
+  initialKittenCount = 8;
+  laserSound: HTMLAudioElement | null = null;
+  explosionSound: HTMLAudioElement | null = null;
   kittenImages = [
     'assets/png-transparent-cat-kitten-cuteness-cat-brown-tabby-kitten-household-animals-cat-like-mammal-thumbnail.png',
     'assets/png-transparent-kitten-bengal-cat-dog-pet-sitting-puppy-kitten-mammal-cat-like-mammal-animals-thumbnail.png',
@@ -40,16 +36,32 @@ export class GameComponent {
   showStartMessage = false;
   lasers: { x: number, y: number, id: number }[] = [];
   laserId = 0;
+  playerName = 'Player 1';
+  submittingScore = false;
+  scoreSubmitSuccess = false;
+  scoreSubmitError: string | null = null;
+  loadingLeaderboard = false;
+  leaderboardError: string | null = null;
+  topScores: HighScoreResponse[] = [];
+  private hasSubmittedScore = false;
   private moveSub?: Subscription;
 
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private highScoreApi: HighScoreApiService
+  ) {}
 
   ngOnInit() {
     if (typeof window !== 'undefined') {
       this.laserSound = new Audio('assets/sounds/laser.mp3');
       this.explosionSound = new Audio('assets/sounds/explosion.wav');
       this.meowSound = new Audio('assets/sounds/meow.mp3');
+      this.playerName = window.localStorage.getItem('catInvaders.playerName') ?? 'Player 1';
     }
+
+    this.loadTopScores();
+
     this.showTitleScreen = true;
     setTimeout(() => {
       this.showTitleScreen = false;
@@ -108,6 +120,7 @@ export class GameComponent {
       if (this.kittens.some((k: any) => !k.exploded && k.y >= 96)) {
         this.gameOver = true;
         this.moveSub?.unsubscribe();
+        this.loadTopScores();
       }
       // If all kittens are exploded, win or next wave
       if (this.kittens.every((k: any) => k.exploded)) {
@@ -125,11 +138,28 @@ export class GameComponent {
           this.spawnKittens();
         } else {
           this.gameWin = true;
+          this.loadTopScores();
         }
         this.moveSub?.unsubscribe();
       }
       this.cdr.detectChanges();
     });
+  }
+
+  restartGame() {
+    this.moveSub?.unsubscribe();
+    this.wave = 1;
+    this.score = 0;
+    this.gameOver = false;
+    this.gameWin = false;
+    this.kittens = [];
+    this.lasers = [];
+    this.hasSubmittedScore = false;
+    this.submittingScore = false;
+    this.scoreSubmitSuccess = false;
+    this.scoreSubmitError = null;
+    this.spawnKittens();
+    this.cdr.detectChanges();
   }
 
   explodeKitten(kitten: any, event?: MouseEvent) {
@@ -218,5 +248,61 @@ export class GameComponent {
       laserYpx >= kittenYpx &&
       laserYpx <= kittenYpx + kittenHeight
     );
+  }
+
+  saveHighScore(): void {
+    if (this.hasSubmittedScore || this.score <= 0) {
+      return;
+    }
+
+    const normalizedName = this.playerName.trim() || 'Anonymous';
+    this.playerName = normalizedName;
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('catInvaders.playerName', normalizedName);
+    }
+
+    this.submittingScore = true;
+    this.scoreSubmitSuccess = false;
+    this.scoreSubmitError = null;
+
+    this.highScoreApi
+      .submitHighScore({
+        playerName: normalizedName,
+        score: this.score,
+        levelReached: this.wave,
+      })
+      .subscribe({
+        next: () => {
+          this.hasSubmittedScore = true;
+          this.submittingScore = false;
+          this.scoreSubmitSuccess = true;
+          this.loadTopScores();
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.submittingScore = false;
+          this.scoreSubmitError = 'Could not save your high score right now.';
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  private loadTopScores(): void {
+    this.loadingLeaderboard = true;
+    this.leaderboardError = null;
+
+    this.highScoreApi.getTopHighScores(10).subscribe({
+      next: (scores) => {
+        this.topScores = scores;
+        this.loadingLeaderboard = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingLeaderboard = false;
+        this.leaderboardError = 'Could not load leaderboard.';
+        this.cdr.detectChanges();
+      },
+    });
   }
 }

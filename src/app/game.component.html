@@ -1,7 +1,7 @@
 <div class="game-container">
-    <div *ngFor="let laser of lasers" class="laser" [style.left]="laser.x + '%'" [style.top]="laser.y + '%'">
-      <div class="laser-beam"></div>
-    </div>
+  <div *ngFor="let laser of lasers" class="laser" [style.left]="laser.x + '%'" [style.top]="laser.y + '%'">
+    <div class="laser-beam"></div>
+  </div>
   <div class="score">Score: {{ score }}</div>
   <div class="kitten" *ngFor="let kitten of kittens"
        [style.left]="kitten.x + '%'"
@@ -22,12 +22,51 @@
   </div>
   <div *ngIf="gameOver" class="game-over-popup">
     <div class="game-over-title">GAME OVER</div>
-    <div class="game-over-subtitle">Press F5 to try again!</div>
+    <div class="game-over-subtitle">Final score: {{ score }}</div>
+
+    <div class="score-save-row">
+      <label for="player-name" class="retro-label">Name</label>
+      <input
+        id="player-name"
+        class="retro-input"
+        type="text"
+        maxlength="50"
+        [(ngModel)]="playerName"
+        [disabled]="submittingScore || scoreSubmitSuccess"
+      />
+      <button
+        class="save-btn"
+        (click)="saveHighScore()"
+        [disabled]="submittingScore || scoreSubmitSuccess"
+      >
+        Save Score
+      </button>
+    </div>
+
+    <div class="submit-status" *ngIf="submittingScore">Saving high score...</div>
+    <div class="submit-status success" *ngIf="scoreSubmitSuccess">High score saved.</div>
+    <div class="submit-status error" *ngIf="scoreSubmitError">{{ scoreSubmitError }}</div>
+
+    <div class="leaderboard-title">TOP 10 PILOTS</div>
+    <div class="submit-status" *ngIf="loadingLeaderboard">Loading leaderboard...</div>
+    <div class="submit-status error" *ngIf="leaderboardError">{{ leaderboardError }}</div>
+
+    <ol class="leaderboard" *ngIf="!loadingLeaderboard && !leaderboardError">
+      <li *ngFor="let highScore of topScores; index as i">
+        <span>{{ i + 1 }}.</span>
+        <span>{{ highScore.playerName || 'Anonymous' }}</span>
+        <span>{{ highScore.score }}</span>
+      </li>
+      <li *ngIf="topScores.length === 0" class="empty">No scores yet.</li>
+    </ol>
+
     <button class="restart-btn" (click)="restartGame()">Restart Game</button>
   </div>
+
   <div *ngIf="gameWin" class="game-win-popup">
     <div class="game-win-title">YOU WIN!</div>
     <div class="game-win-subtitle">All kittens exploded!</div>
+    <div class="game-win-subtitle">Score: {{ score }}</div>
     <button class="restart-btn" (click)="restartGame()">Restart Game</button>
   </div>
 </div>
