@@ -130,9 +130,9 @@
 
 .score-save-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 1fr;
   gap: 10px;
-  align-items: end;
+  align-items: stretch;
   margin: 16px 0;
 }
 
@@ -145,7 +145,7 @@
 }
 
 .retro-input {
-  grid-column: 1 / 2;
+  grid-column: 1 / -1;
   width: 100%;
   min-width: 0;
   padding: 10px;
@@ -175,9 +175,10 @@
 }
 
 .score-save-row .save-btn {
-  grid-column: 2 / 3;
-  margin-top: 0;
-  white-space: nowrap;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  width: 100%;
+  white-space: normal;
 }
 
 .save-btn:hover,
