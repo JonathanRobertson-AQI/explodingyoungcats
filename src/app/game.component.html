@@ -67,6 +67,43 @@
     <div class="game-win-title">YOU WIN!</div>
     <div class="game-win-subtitle">All kittens exploded!</div>
     <div class="game-win-subtitle">Score: {{ score }}</div>
+
+    <div class="score-save-row">
+      <label for="player-name-win" class="retro-label">Name</label>
+      <input
+        id="player-name-win"
+        class="retro-input"
+        type="text"
+        maxlength="50"
+        [(ngModel)]="playerName"
+        [disabled]="submittingScore || scoreSubmitSuccess"
+      />
+      <button
+        class="save-btn"
+        (click)="saveHighScore()"
+        [disabled]="submittingScore || scoreSubmitSuccess"
+      >
+        Save Score
+      </button>
+    </div>
+
+    <div class="submit-status" *ngIf="submittingScore">Saving high score...</div>
+    <div class="submit-status success" *ngIf="scoreSubmitSuccess">High score saved.</div>
+    <div class="submit-status error" *ngIf="scoreSubmitError">{{ scoreSubmitError }}</div>
+
+    <div class="leaderboard-title">LEADERBOARD</div>
+    <div class="submit-status" *ngIf="loadingLeaderboard">Loading leaderboard...</div>
+    <div class="submit-status error" *ngIf="leaderboardError">{{ leaderboardError }}</div>
+
+    <ol class="leaderboard" *ngIf="!loadingLeaderboard && !leaderboardError">
+      <li *ngFor="let highScore of topScores; index as i">
+        <span>{{ i + 1 }}.</span>
+        <span>{{ highScore.playerName || 'Anonymous' }}</span>
+        <span>{{ highScore.score }}</span>
+      </li>
+      <li *ngIf="topScores.length === 0" class="empty">No scores yet.</li>
+    </ol>
+
     <button class="restart-btn" (click)="restartGame()">Restart Game</button>
   </div>
 </div>
