@@ -90,6 +90,8 @@ export class GameComponent {
       count = Math.floor(this.initialKittenCount * 2 * 1.5 * 2);
     } else if (this.wave === 5) {
       count = Math.floor(this.initialKittenCount * 2 * 1.5 * 2 * 2);
+    } else if (this.wave === 6) {
+      count = 150;
     }
     // Make each wave 50% faster than the previous
     this.kittenSpeed = 0.5 * Math.pow(1.5, this.wave - 1);
